@@ -20,15 +20,15 @@ async def test_project(dut):
     dut.rst_n.value = 1
     dut._log.info("Test project behavior")
 	
-    # uio_in[7:0] = [wr_en,   sel,     0,     0, in[11], in[10], in[9], in[8]] 
-    # ui_in [7:0] = [in[7], in[6], in[5], in[4],  in[3],  in[2], in[1], in[0]]
+    # uio_in[7:0] = [wr_en,   sel,     0, out_en, in[11], in[10], in[9], in[8]] 
+    # ui_in [7:0] = [in[7], in[6], in[5],  in[4],  in[3],  in[2], in[1], in[0]]
     # uo_out[0]   = pwm_out
 	
 #----------- TEST1 ---------------
 
     # Set the input values for duty cycles
     dut.ui_in.value = 50	# duty 50%
-    dut.uio_in.value = 128	# uio_in = [1, 0, 0, 0, 0, 0, 0, 0]
+    dut.uio_in.value = 160	# uio_in = [1, 0, 1, 0, 0, 0, 0, 0]
 	
     # Wait for one clock cycle to see the output values
     await ClockCycles(dut.clk, 2)
@@ -36,7 +36,7 @@ async def test_project(dut):
     # Set the input values for period
 	
     dut.ui_in.value = 4 	# period = 4 ==> fq = 12.5MHz
-    dut.uio_in.value = 192	# uio_in = [1, 1, 0, 0, 0, 0, 0, 0]
+    dut.uio_in.value = 224	# uio_in = [1, 1, 1, 0, 0, 0, 0, 0]
     await ClockCycles(dut.clk, 2)
     period = int(dut.ui_in.value)
     await ClockCycles(dut.clk, dut.ui_in.value)
@@ -63,14 +63,14 @@ async def test_project(dut):
 
     # Set the input values for duty cycles
     dut.ui_in.value = 30	# duty 30%
-    dut.uio_in.value = 128	# uio_in = [1, 0, 0, 0, 0, 0, 0, 0]
+    dut.uio_in.value = 160	# uio_in = [1, 0, 1, 0, 0, 0, 0, 0]
 	
     await ClockCycles(dut.clk, 2)
     duty = int(dut.ui_in.value)	# store duty cycle value 
 	
     # Set the input values for period
     dut.ui_in.value = 144 	# period = 100 ==> fq = 5MHz
-    dut.uio_in.value = 192	# uio_in = [1, 1, 0, 0, 0, 0, 0, 0]
+    dut.uio_in.value = 224	# uio_in = [1, 1, 1, 0, 0, 0, 0, 0]
 	
     await ClockCycles(dut.clk, 2)
     period = int(dut.ui_in.value)
