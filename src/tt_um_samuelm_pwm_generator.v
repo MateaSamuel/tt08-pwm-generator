@@ -4,6 +4,7 @@
  */
 
 `default_nettype none
+`include "pwm_generator.v"
 
 module tt_um_samuelm_pwm_generator (
     input  wire [7:0] ui_in,    // Dedicated inputs
