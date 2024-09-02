@@ -19,7 +19,7 @@ module pwm_generator(
 	    duty_reg    <= 0;
 	end else 
 	begin
-	    if (en == 1'b1) begin
+		if (wr_en == 1'b1) begin
 		if (sel == 1'b1) begin
 	        	period_reg  	<= in;
 		      end  
