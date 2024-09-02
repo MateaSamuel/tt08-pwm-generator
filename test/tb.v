@@ -23,35 +23,35 @@ module tb ();
   wire [7:0] uio_out;
   wire [7:0] uio_oe;
 
-  // Data inputs
-   wire [11:0] in;
-   assign ui_in[0]  = in[0];
-   assign ui_in[1]  = in[1];
-   assign ui_in[2]  = in[2];
-   assign ui_in[3]  = in[3];
-   assign ui_in[4]  = in[4];
-   assign ui_in[5]  = in[5];
-   assign ui_in[6]  = in[6];
-   assign ui_in[7]  = in[7];
-   assign uio_in[0] = in[8];
-   assign uio_in[1] = in[9];
-   assign uio_in[2] = in[10];
-   assign uio_in[3] = in[11];
+  // // Data inputs
+  //  wire [11:0] in;
+  //  assign ui_in[0]  = in[0];
+  //  assign ui_in[1]  = in[1];
+  //  assign ui_in[2]  = in[2];
+  //  assign ui_in[3]  = in[3];
+  //  assign ui_in[4]  = in[4];
+  //  assign ui_in[5]  = in[5];
+  //  assign ui_in[6]  = in[6];
+  //  assign ui_in[7]  = in[7];
+  //  assign uio_in[0] = in[8];
+  //  assign uio_in[1] = in[9];
+  //  assign uio_in[2] = in[10];
+  //  assign uio_in[3] = in[11];
 
-   // input for selecting the register ( "0" - duty_reg, "1" - period_reg)
-   wire sel;
-   assign uio_in[6] = sel;
+  //  // input for selecting the register ( "0" - duty_reg, "1" - period_reg)
+  //  wire sel;
+  //  assign uio_in[6] = sel;
 
-   // input for write enable ("0" - do nothing,"1" - write selected register)
-   wire wr_en;
-   assign uio_in[7] = wr_en;
+  //  // input for write enable ("0" - do nothing,"1" - write selected register)
+  //  wire wr_en;
+  //  assign uio_in[7] = wr_en;
 
-   // PWM output 
-   wire pwm_out;
-   assign uo_out[0] = pwm_out;
+  //  // PWM output 
+  //  wire pwm_out;
+  //  assign uo_out[0] = pwm_out;
    
   // Replace tt_um_example with your module name:
-  tt_um_samuelm_pwm_generator tt_um_samuelm_pwm_generator (
+  tt_um_samuelm_pwm_generator user_project (
 
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST
