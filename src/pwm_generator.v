@@ -13,7 +13,7 @@ module pwm_generator(
 
 	assign pwm_out = pwm_out_s;
 
-	always@ (posedge clk or negedge rst_n)begin
+	always@ (posedge clk or posedge rst_n)begin
 	if (rst_n == 1'b0) begin
 	    period_reg  <= 0;
 	    duty_reg    <= 0;
@@ -33,7 +33,7 @@ module pwm_generator(
 	wire [12:0] t_on = (period_reg * duty_reg) / 100;
 	reg  [12:0] counter;
 
-	always@ (posedge clk or negedge rst_n) begin
+	always@ (posedge clk or posedge rst_n) begin
 	if((rst_n == 1'b0) || (counter == period_reg-1)) begin
 		counter <= 0;
 	    end
