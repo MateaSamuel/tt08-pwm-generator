@@ -31,7 +31,7 @@ module pwm_generator(
 	end
 
 	wire [12:0] t_on = (period_reg * duty_reg) / 100;
-	reg  [11:0] counter;
+	reg  [12:0] counter;
 
 	always@ (posedge clk or negedge rst_n) begin
 	if((rst_n == 1'b0) || (counter == period_reg-1)) begin
