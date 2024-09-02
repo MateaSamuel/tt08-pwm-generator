@@ -1,4 +1,4 @@
-module tt_um_samuelm_pwm_generator(
+module pwm_generator(
 	input  wire [11:0] in,
 	input  wire sel,
 	input  wire wr_en,
