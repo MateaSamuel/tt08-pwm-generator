@@ -20,15 +20,16 @@ module tt_um_samuelm_pwm_generator (
   // All output pins must be assigned. If not used, assign to 0.
     assign uo_out[7:1] = 0;    // only uo_out[0] is used as output for pwm_out
     assign uio_out = 0;        
-    assign uio_oe[7:0]  = 8'b0011_0000;
+    assign uio_oe[7:0]  = 8'b0001_0000;
 
   // List all unused inputs to prevent warnings
-    wire _unused = &{ena, uio_in[5:4], 1'b0};
+    wire _unused = &{ena, uio_in[4], 1'b0};
 
     pwm_generator pwm_generator_inst(
         .in         ({uio_in[3:0],ui_in[7:0]}),
         .sel        (uio_in[6]),
         .wr_en      (uio_in[7]),
+        .out_en     (uio_in[5]),
         .pwm_out    (uo_out[0]),
         .clk        (clk),
         .rst_n      (rst_n)
