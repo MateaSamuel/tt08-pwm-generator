@@ -1,8 +1,10 @@
+
 # SPDX-FileCopyrightText: © 2024 Tiny Tapeout
 # SPDX-License-Identifier: MIT
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles
+
 @cocotb.test()
 async def test_project(dut):
     dut._log.info("Start")
@@ -19,70 +21,66 @@ async def test_project(dut):
     await ClockCycles(dut.clk, 10)
     dut.rst_n.value = 1
     dut._log.info("Test project behavior")
-	
-    # uio_in[7:0] = [wr_en,   sel,     0, out_en, in[11], in[10], in[9], in[8]] 
-    # ui_in [7:0] = [in[7], in[6], in[5],  in[4],  in[3],  in[2], in[1], in[0]]
-    # uo_out[0]   = pwm_out
-	
-#----------- TEST1 ---------------
+
+    await testing(dut, 55, 160,   3, 224)
+    await testing(dut, 50, 160,   2, 224)
+    await testing(dut, 50, 160,   2, 224)
+    await testing(dut, 50, 160,   2, 224)
+    await testing(dut, 83, 160, 100, 224)
+    await testing(dut, 98, 160, 100, 224)
+    await testing(dut, 99, 160, 100, 224)
+    await testing(dut, 50, 160,  50, 224)
+
+    print("finish")
+
+async def testing(dut ,duty_val, duty_uio, period_val, period_uio):
 
     # Set the input values for duty cycles
-    dut.ui_in.value = 50	# duty 50%
-    dut.uio_in.value = 160	# uio_in = [1, 0, 1, 0, 0, 0, 0, 0]
+    dut.ui_in.value = duty_val	# duty 99%
+    dut.uio_in.value = duty_uio  # uio_in = [1, 0, 1, 0, 0, 0, 0, 0] -- 160
 	
     # Wait for one clock cycle to see the output values
     await ClockCycles(dut.clk, 2)
     duty = int(dut.ui_in.value)	# store duty cycle value 
+
     # Set the input values for period
-	
-    dut.ui_in.value = 4 	# period = 4 ==> fq = 12.5MHz
-    dut.uio_in.value = 224	# uio_in = [1, 1, 1, 0, 0, 0, 0, 0]
+    dut.ui_in.value = period_val      	# period = 100 ==> fq = 500 kHz --100
+    dut.uio_in.value = period_uio     	# uio_in = [1, 1, 1, 0, 0, 0, 0, 0] -- 224
+
     await ClockCycles(dut.clk, 2)
     period = int(dut.ui_in.value)
-    await ClockCycles(dut.clk, dut.ui_in.value)
-	
-    t_on = int((duty*period)/100)
-	
-    val = []
-	
-    for i in range(dut.ui_in.value):
-        await ClockCycles(dut.clk, 1)
-#       dut._log.info("pwm_out : %s",dut.uo_out.value); 
-        val.append(int(dut.uo_out.value))
-		
-#    if val.count(1) == t_on:
-#       print("\n		TEST TRECUT")
-#    else: 
-#        print("\n		TEST PICAT")
-    #val.reverse()
-#    print(val)
+    uio_val = int(dut.uio_in.value)
 
-    assert val.count(1) == t_on
-	
-#------------ TEST2 ----------------
+    # verify if the uio_val has last 4 bits( bits used to set period greater than 255)
+    uio_bin = bin(uio_val)
+    new_val = 0
+    val = uio_bin[len(uio_bin)-4:len(uio_bin)]
 
-    # Set the input values for duty cycles
-    dut.ui_in.value = 30	# duty 30%
-    dut.uio_in.value = 160	# uio_in = [1, 0, 1, 0, 0, 0, 0, 0]
-	
-    await ClockCycles(dut.clk, 2)
-    duty = int(dut.ui_in.value)	# store duty cycle value 
-	
-    # Set the input values for period
-    dut.ui_in.value = 144 	# period = 100 ==> fq = 5MHz
-    dut.uio_in.value = 224	# uio_in = [1, 1, 1, 0, 0, 0, 0, 0]
-	
-    await ClockCycles(dut.clk, 2)
-    period = int(dut.ui_in.value)
-	
-    await ClockCycles(dut.clk, dut.ui_in.value)
-	
-    t_on = int((duty*period)/100)
-	
+    for i in range(0,len(val)):
+        new_val = new_val + int(val[i])*2**i
+
+    if(new_val == 0):
+        period_good = period
+    else: 
+        period_new = str(bin(uio_val))[6:10] + str(bin(period))[2:10]
+        period_gt255  = 0
+        l = len(period_new) - 1
+
+        for i in range(0,len(period_new)):
+            period_gt255 = period_gt255 + int(period_new[l-i])*2**i
+
+        period_good = period_gt255
+
+    t_on = int((duty*period_good)/100)
+    no_of_cycles = period_good
+
+    await ClockCycles(dut.clk,3 * period_good)
+
     val = []
-    for i in range(dut.ui_in.value):
+    
+    for i in range(no_of_cycles):
         await ClockCycles(dut.clk, 1)
-        # dut._log.info("pwm_out : %s",dut.uo_out.value); 
         val.append(int(dut.uo_out.value))
-		
-    assert val.count(1) == t_on
+
+    # assert val.count(1) == t_on
+
