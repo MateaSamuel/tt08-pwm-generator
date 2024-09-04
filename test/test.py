@@ -43,6 +43,11 @@ async def test_project(dut):
     await testing(dut, 25, 160,   5, 224)
     await testing(dut, 79, 160, 200, 224)
     await testing(dut, 60, 160, 255, 224)
+    await testing(dut, 50, 128, 232, 227)	# per = 1000
+    await testing(dut, 50, 160, 232, 227)	# per = 1000
+    await testing(dut, 12, 160, 208, 231)	# per = 2000
+    await testing(dut, 50, 160,  70, 224)
+	
 
 async def testing(dut ,duty_val, duty_uio, period_val, period_uio):
 
