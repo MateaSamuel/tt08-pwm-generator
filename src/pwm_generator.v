@@ -30,7 +30,7 @@ module pwm_generator(
 		      else begin
 			// for duty are used only first 7-bit, the rest of the bits beeing assigned to "0"
 	      		duty_reg    	<= {{5{1'b0}},in[6:0]};
-		end
+			end
 	    end
 	end
 	end
@@ -40,18 +40,21 @@ module pwm_generator(
 
 	always@ (posedge clk) begin
 	// the counter will be set to "0" when reset is low or the value will be reached period-1 value
-	if((rst_n == 1'b0) || (counter == period_reg-1)) begin
-		counter <= 0;
+		if((rst_n == 1'b0) || (counter == period_reg-1)) begin
+			counter <= 0;
 	    end
-	else begin
+		else begin
 	    // the counter will start to counter if both registers has a value > 0 
-	    if((period_reg != 0) && (duty_reg != 0))
-		counter <= counter + 1;
-	    if(counter < t_on)
-		pwm_out_s  <= 1'b1;
+	    	if((period_reg != 0) && (duty_reg != 0))
+				counter <= counter + 1;
+		end
+	end
+    
+	always@ (posedge clk) begin
+		if(counter < t_on)
+			pwm_out_s  <= 1'b1;
 	    else 
-		pwm_out_s  <= 1'b0;
-	    end
+			pwm_out_s  <= 1'b0;
 	end
 
 endmodule
