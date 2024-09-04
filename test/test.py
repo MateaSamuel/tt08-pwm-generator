@@ -32,9 +32,13 @@ async def test_project(dut):
     await testing(dut,  1, 160, 184, 235)	# per = 3000
     await testing(dut, 47, 160, 160, 239)	# per = 4000
     await testing(dut, 76, 160, 255, 239)	# per = 4095
+    await ClockCycles(dut.clk, 1000)
     await testing(dut, 50, 160,  10, 224)
     await testing(dut, 30, 160,  33, 224)
     await testing(dut, 50, 160,  70, 224)
+    dut.rst_n.value = 0
+    await ClockCycles(dut.clk, 10)
+    dut.rst_n.value = 1
     await testing(dut, 83, 160,  45, 224)
     await testing(dut, 25, 160,   5, 224)
     await testing(dut, 79, 160, 200, 224)
